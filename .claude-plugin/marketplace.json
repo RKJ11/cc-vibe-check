@@ -1,0 +1,14 @@
+{
+  "name": "cc-vibe-check",
+  "owner": {
+    "name": "RKJ11",
+    "url": "https://github.com/RKJ11"
+  },
+  "plugins": [
+    {
+      "name": "cc-vibe-check",
+      "source": "./",
+      "description": "How you and Claude are really getting along. A local dashboard of interrupts, rejections, rewinds and corrections from your own Claude Code transcripts. Nothing is uploaded."
+    }
+  ]
+}

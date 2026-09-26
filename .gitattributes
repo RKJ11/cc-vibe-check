@@ -1,0 +1,5 @@
+# Keep text files LF on every OS for consistent, portable behavior.
+*.mjs text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf
+*.md text eol=lf

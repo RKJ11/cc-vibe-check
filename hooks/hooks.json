@@ -1,0 +1,15 @@
+{
+  "description": "cc-vibe-check — refresh behavior metrics when a session ends (no tokens)",
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.mjs\""
+          }
+        ]
+      }
+    ]
+  }
+}

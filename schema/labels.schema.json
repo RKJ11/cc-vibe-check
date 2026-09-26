@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["labels"],
+  "properties": {
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["turn", "label", "tone", "agentReaction", "confidence", "ruleCandidate"],
+        "properties": {
+          "turn": { "type": "integer", "minimum": 1 },
+          "label": { "type": "string", "enum": ["new-request", "clarification", "action-correction", "claim-challenge", "give-up", "praise"] },
+          "tone": { "type": "string", "enum": ["neutral", "curious", "frustrated", "sarcastic", "pleased"] },
+          "agentReaction": { "type": ["string", "null"], "enum": ["defended", "revised-with-reason", "flipped-without-reason", null] },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "ruleCandidate": { "type": ["string", "null"], "maxLength": 140 }
+        }
+      }
+    }
+  }
+}

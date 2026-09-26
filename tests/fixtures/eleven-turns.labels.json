@@ -1,0 +1,13 @@
+{
+  "1": { "label": "new-request", "tone": "neutral", "agentReaction": null, "ruleCandidate": null },
+  "2": { "label": "action-correction", "tone": "neutral", "agentReaction": null, "ruleCandidate": "do not add explanatory comments to code" },
+  "3": { "label": "action-correction", "tone": "sarcastic", "agentReaction": null, "ruleCandidate": "do not delete or modify existing tests" },
+  "4": { "label": "claim-challenge", "tone": "curious", "agentReaction": "revised-with-reason", "ruleCandidate": null },
+  "5": { "label": "claim-challenge", "tone": "neutral", "agentReaction": "defended", "ruleCandidate": null },
+  "6": { "label": "clarification", "tone": "curious", "agentReaction": null, "ruleCandidate": null },
+  "7": { "label": "praise", "tone": "pleased", "agentReaction": null, "ruleCandidate": null },
+  "8": { "label": "action-correction", "tone": "frustrated", "agentReaction": null, "ruleCandidate": "do not add explanatory comments to code" },
+  "9": { "label": "new-request", "tone": "neutral", "agentReaction": null, "ruleCandidate": null },
+  "10": { "label": "new-request", "tone": "neutral", "agentReaction": null, "ruleCandidate": null },
+  "12": { "label": "give-up", "tone": "frustrated", "agentReaction": null, "ruleCandidate": null }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "cc-vibe-check",
+  "version": "0.2.0",
+  "description": "How you and Claude are really getting along. A local dashboard of interrupts, rejections, rewinds and corrections from your own Claude Code transcripts. Nothing is uploaded.",
+  "author": {
+    "name": "RKJ11",
+    "url": "https://github.com/RKJ11"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/RKJ11/cc-vibe-check",
+  "repository": "https://github.com/RKJ11/cc-vibe-check.git",
+  "keywords": [
+    "analytics",
+    "dashboard",
+    "developer-experience",
+    "transcripts",
+    "hooks",
+    "privacy"
+  ]
+}
