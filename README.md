@@ -34,50 +34,19 @@ Open `~/.claude/vibe-check/dashboard.html` in a browser. It is a stable path you
 
 The same commands work from any terminal: `node <plugin>/scripts/vibe-check.mjs …`.
 
-## How it works
+## What runs on your machine
 
-```
-Claude Code ──writes──▶ transcripts ──▶ L1 extract.mjs ──▶ local store ──▶ L3 render.mjs ──▶ dashboard.html
-                                        (SessionEnd hook,      ▲
-                                         no tokens)            │ labels
-                        /vibe-check ──▶ L2 classify.mjs ───────┘
-                                        headless claude -p (Haiku), redacted views only
-```
-
-1. **Extract (L1).** When a session ends, a hook starts a detached script and exits in well under a second. The script measures behavior only (it never interprets your words) and writes metrics plus a compact, redacted view of each session. A 287 KB transcript becomes about 5 KB.
-2. **Classify (L2).** On request, or after each session if you opt in, one headless `claude -p` call per session labels each typed prompt: new request, clarification, action correction, claim challenge, give-up or praise, plus tone. Each prompt is labelled once and cached.
-3. **Render (L3).** A self-contained HTML file with inline SVG. No CDN, no server, no model.
-
-### Isolation guards on every classification call
-
-| Guard | How |
-|---|---|
-| No hooks run (yours or any plugin's) | `--settings` with `disableAllHooks: true` |
-| No loop back into Vibe Check | `VIBECHECK_CHILD=1`; the hook exits immediately when it sees it |
-| Not saved as a session | `--no-session-persistence`; L1 also counts only `promptSource: "typed"` |
-| No side effects | `--tools ""`, run from an empty folder |
-| No CLAUDE.md | `claudeMdExcludes` lists the user file and every parent folder's files by exact path |
-| No thinking (5–10× cheaper) | `MAX_THINKING_TOKENS=0` |
-| Stable labels | pinned `claude-haiku-4-5-20251001`, stored with every label |
-
-A self-test checks the first four with one tiny call before auto-classify turns on, and again whenever Claude Code updates. If a guard fails, auto-classify turns itself off and the dashboard says why.
+- When a session ends, a quick background script counts what happened. It uses no tokens and never reads your words for meaning.
+- Classification happens only when you ask for it, or after each session if you turn auto on. Each prompt is labelled once and the result is cached.
+- Classification calls run with every hook, tool and CLAUDE.md turned off and are not saved as sessions. A self-test checks this, and auto-classify switches itself off if a check fails.
 
 ## Cost
 
-About 2,200 input and 900 output tokens per 11-prompt session: roughly **$0.007 and 10 seconds**. A developer with about 160 typed prompts a week spends around **$0.10 a week** at Haiku 4.5 list price ($1 / $5 per million tokens), or a small share of a Pro/Max plan. Everything measured costs **zero tokens**. Every call's usage and cost is in `~/.claude/vibe-check/runs.jsonl`.
+A developer with about 160 typed prompts a week spends around **$0.10 a week** at Haiku 4.5 list price ($1 / $5 per million tokens), or a small share of a Pro/Max plan. Everything measured costs **zero tokens**. Every call's usage and cost is in `~/.claude/vibe-check/runs.jsonl`.
 
 ## Your data
 
 See [PRIVACY.md](PRIVACY.md). In short: everything stays in `~/.claude/vibe-check/`; compact views are deleted after 30 days; `/vibe-check --forget` deletes it all; your transcripts are never modified.
-
-## Development
-
-```
-npm test                 # unit + integration tests, uses a fake claude, no tokens
-npm run fixtures         # regenerate synthetic fixtures
-npm run eval             # live classifier eval against hand labels (spends ~$0.02)
-claude --plugin-dir .    # try the plugin locally
-```
 
 ## License
 

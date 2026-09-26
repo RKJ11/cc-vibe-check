@@ -36,7 +36,7 @@
   marketplace plugins; no user, project, local or parent-folder CLAUDE.md; no
   transcript. Live eval: label accuracy 93.9%, correction precision 1.00,
   cross-run agreement 90.9%, max 1,306 output tokens per call.
-- The label feedback loop (formerly v0.3) moved to ROADMAP.md as a later feature.
+- The label feedback loop (formerly v0.3) is deferred to a later release.
 
 ## 0.1.0 (2026-09-27)
 

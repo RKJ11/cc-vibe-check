@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-`cc-vibe-check` ("Vibe Check") is a Claude Code **plugin**. It reads local session transcripts and builds a dashboard of how the developer and Claude are getting along. This repo is **Phase 1 only**: an individual-developer plugin. Do not add export, team, org or rule-sharing features; those belong to Phase 2.
+`cc-vibe-check` ("Vibe Check") is a Claude Code **plugin**. It reads local session transcripts and builds a dashboard of how the developer and Claude are getting along. This repo is **Phase 1 only**: an individual-developer plugin. Do not add export, team, org or rule-sharing features; they are out of scope for this repo.
 
 Plain Node ESM, zero runtime dependencies, no build step.
 
