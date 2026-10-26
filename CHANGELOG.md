@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2 (2026-10-27)
+
+- Sessions skipped by 0.2.0's parser (e.g. VS Code sessions recorded
+  as headless) were not re-read after upgrading, because only changed files are. Metrics
+  version bumped to 2, so the next run re-reads every transcript once.
+  Labels are keyed by prompt uuid, so nothing is re-classified.
+
 ## 0.2.1 (2026-10-27)
 
 - VS Code (and other IDE) sessions were skipped as headless, so nothing in

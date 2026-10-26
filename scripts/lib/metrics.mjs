@@ -3,7 +3,9 @@
 import crypto from 'node:crypto';
 import path from 'node:path';
 
-export const METRICS_VERSION = 1;
+// Bump when parsing changes what a stored record would contain; the next run
+// re-reads every transcript (2: VS Code sessions were skipped as headless).
+export const METRICS_VERSION = 2;
 
 const hash = (s) => crypto.createHash('sha1').update(String(s)).digest('hex').slice(0, 12);
 

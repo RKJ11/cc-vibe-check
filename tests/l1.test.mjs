@@ -169,3 +169,24 @@ test('extract end to end writes metrics, views and skips headless', async () => 
   assert.deepEqual(r3.unknownTypes, { 'brand-new-type': 1 });
   fs.rmSync(tmp, { recursive: true, force: true });
 });
+
+test('upgrade: files skipped by an older parser are re-read', async () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vc-'));
+  const proj = path.join(tmp, 'projects', '-work-web-app');
+  fs.mkdirSync(proj, { recursive: true });
+  const file = path.join(proj, 'vscode.jsonl');
+  fs.copyFileSync(path.join(fx, 'vscode.jsonl'), file);
+  const st = fs.statSync(file);
+  fs.mkdirSync(path.join(tmp, 'store', 'data'), { recursive: true });
+  fs.writeFileSync(
+    path.join(tmp, 'store', 'data', 'state.json'),
+    JSON.stringify({ metricsVersion: 1, files: { [file]: { size: st.size, mtimeMs: st.mtimeMs, id: 'fx-vscode', skipped: 'headless' } } }),
+  );
+  process.env.VIBECHECK_PROJECTS_DIR = path.join(tmp, 'projects');
+  process.env.VIBECHECK_HOME = path.join(tmp, 'store');
+  const { runExtract } = await import('../scripts/extract.mjs');
+  const r = runExtract();
+  assert.equal(r.processed, 1);
+  assert.deepEqual(r.sessions, ['fx-vscode']);
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
