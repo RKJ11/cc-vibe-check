@@ -1,6 +1,6 @@
 {
   "name": "cc-vibe-check",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "How you and Claude are really getting along. A local dashboard of interrupts, rejections, rewinds and corrections from your own Claude Code transcripts. Nothing is uploaded.",
   "author": {
     "name": "RKJ11",

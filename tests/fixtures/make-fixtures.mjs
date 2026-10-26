@@ -100,7 +100,28 @@ function headless() {
   return b;
 }
 
-const fixtures = { 'eleven-turns': elevenTurns(), legacy: legacy(), headless: headless() };
+// ── vscode: the VS Code extension sends typed prompts through the SDK ─────
+// entrypoint "claude-vscode", typed prompts are promptSource:"sdk" with
+// origin.kind:"human". 3 typed prompts; the sdk entry without a human origin
+// and the injected text without a promptSource are not typed.
+function vscode() {
+  const b = new Tx({ sessionId: 'fx-vscode', cwd: '/work/web-app', start: '2026-09-24T14:00:00Z', version: '2.1.287' });
+  const human = (e) => Object.assign(e, { promptSource: 'sdk', origin: { kind: 'human' } });
+  human(b.typed('add a dark mode toggle to the settings page', 0));
+  b.tool('Edit', { file_path: '/work/web-app/src/settings.tsx' });
+  b.say('Added the toggle.');
+  b.slash('cc-vibe-check:vibe-check');
+  b.base('user', { promptSource: 'sdk', message: { role: 'user', content: 'Injected by the extension, not the developer.' } });
+  human(b.typed('no, put it in the header instead', 2));
+  b.tool('Edit', { file_path: '/work/web-app/src/header.tsx' });
+  b.interrupt();
+  human(b.typed('thanks, that works', 1)).promptSource = 'sdk-vscode';
+  b.say('Glad it works.');
+  b.entries.forEach((e) => e.entrypoint && (e.entrypoint = 'claude-vscode'));
+  return b;
+}
+
+const fixtures = { 'eleven-turns': elevenTurns(), legacy: legacy(), headless: headless(), vscode: vscode() };
 for (const [name, b] of Object.entries(fixtures)) {
   fs.writeFileSync(path.join(here, `${name}.jsonl`), b.jsonl());
 }

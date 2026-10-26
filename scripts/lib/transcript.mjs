@@ -63,13 +63,18 @@ function userText(o) {
 
 // A prompt the developer typed. Newer versions mark it promptSource:"typed",
 // and in those transcripts an entry without the marker is injected text (e.g.
-// a command's expanded content), never typed. Older versions have no marker
+// a command's expanded content), never typed. IDE sessions (VS Code,
+// entrypoint "claude-vscode") send prompts through the SDK, so they are marked
+// promptSource:"sdk" with origin.kind:"human"; those are typed too. Older versions have no marker
 // at all, so fall back to "a user text entry that is not a tool result, meta
 // entry, command wrapper or interrupt marker".
+const isTypedSource = (o) =>
+  o.promptSource === 'typed' || (/^sdk/.test(o.promptSource || '') && o.origin?.kind === 'human');
+
 function isTypedPrompt(o, text, hasPromptSource) {
   if (o.type !== 'user' || o.isSidechain || o.isMeta || o.isCompactSummary || o.isVisibleInTranscriptOnly) return false;
   if (isToolResultEntry(o)) return false;
-  if (hasPromptSource ? o.promptSource !== 'typed' : o.promptSource !== undefined) return false;
+  if (hasPromptSource ? !isTypedSource(o) : o.promptSource !== undefined) return false;
   if (!text) return false;
   if (text.startsWith(INTERRUPT)) return false;
   if (/^<(command-name|command-message|command-args|local-command-stdout|local-command-stderr|bash-input|bash-stdout|bash-stderr)>/.test(text)) return false;
@@ -162,7 +167,9 @@ export function parseTranscript(entries, { file = null, subagentEntries = [], su
     if (o.gitBranch && !session.gitBranch) session.gitBranch = o.gitBranch;
     if (o.version) versions.add(o.version);
     if (o.entrypoint && !session.entrypoint) session.entrypoint = o.entrypoint;
-    if (o.promptSource === 'sdk' || /^sdk/.test(o.entrypoint || '')) session.headless = true;
+    // Headless means the SDK entrypoint (claude -p, sdk-cli, ...). promptSource
+    // "sdk" alone is not enough: the VS Code extension uses it for typed prompts.
+    if (/^sdk/.test(o.entrypoint || '')) session.headless = true;
     if (o.type === 'ai-title' && o.aiTitle) session.title = o.aiTitle;
     if (t != null && (o.type === 'user' || o.type === 'assistant' || o.type === 'system')) {
       if (session.start == null || t < session.start) session.start = t;

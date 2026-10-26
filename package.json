@@ -1,6 +1,6 @@
 {
   "name": "cc-vibe-check",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Claude Code plugin: how you and Claude are really getting along.",
   "type": "module",

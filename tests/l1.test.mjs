@@ -86,6 +86,26 @@ test('headless classification sessions are flagged', () => {
   assert.equal(s.turns.length, 0, 'sdk prompts are never typed prompts');
 });
 
+test('vscode: sdk prompts with a human origin are typed, session is not headless', () => {
+  const s = load('vscode');
+  assert.equal(s.entrypoint, 'claude-vscode');
+  assert.equal(s.headless, false);
+  assert.deepEqual(s.turns.map((t) => t.text), ['add a dark mode toggle to the settings page', 'no, put it in the header instead', 'thanks, that works']);
+  const m = summarize(s);
+  assert.equal(m.counts.typed, 3);
+  assert.equal(m.counts.interrupts, 1);
+  assert.deepEqual(s.slash, { 'cc-vibe-check:vibe-check': 1 });
+});
+
+test('promptSource sdk alone does not make a session headless', () => {
+  const s = load('vscode');
+  assert.ok(s.turns.length && !s.headless);
+  assert.ok(load('headless').headless, 'sdk entrypoint still does');
+  const entries = readJsonl(path.join(fx, 'headless.jsonl'));
+  for (const e of entries) if (e.promptSource) e.origin = { kind: 'human' };
+  assert.ok(parseTranscript(entries).headless, 'a human origin does not undo an sdk entrypoint');
+});
+
 test('compact view: prompts, behavior, and quoted words kept verbatim', () => {
   const s = load('eleven-turns');
   const v = compactView(s, { project: 'cc-vibe-check' });
@@ -128,15 +148,15 @@ test('extract end to end writes metrics, views and skips headless', async () => 
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vc-'));
   const proj = path.join(tmp, 'projects', '-work-demo');
   fs.mkdirSync(proj, { recursive: true });
-  for (const f of ['eleven-turns', 'legacy', 'headless']) fs.copyFileSync(path.join(fx, `${f}.jsonl`), path.join(proj, `${f}.jsonl`));
+  for (const f of ['eleven-turns', 'legacy', 'headless', 'vscode']) fs.copyFileSync(path.join(fx, `${f}.jsonl`), path.join(proj, `${f}.jsonl`));
   process.env.VIBECHECK_PROJECTS_DIR = path.join(tmp, 'projects');
   process.env.VIBECHECK_HOME = path.join(tmp, 'store');
   const { runExtract } = await import('../scripts/extract.mjs');
 
   const r1 = runExtract();
-  assert.equal(r1.processed, 3);
+  assert.equal(r1.processed, 4);
   assert.equal(r1.skipped, 1);
-  assert.deepEqual(r1.sessions.sort(), ['fx-eleven-turns', 'fx-legacy']);
+  assert.deepEqual(r1.sessions.sort(), ['fx-eleven-turns', 'fx-legacy', 'fx-vscode']);
   assert.ok(fs.existsSync(path.join(tmp, 'store', 'views', 'fx-eleven-turns.txt')));
   const stored = JSON.parse(fs.readFileSync(path.join(tmp, 'store', 'data', 'sessions', 'fx-eleven-turns.json'), 'utf8'));
   assert.ok(!JSON.stringify(stored).includes('great job'), 'metrics never contain prompt text');

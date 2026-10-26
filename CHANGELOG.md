@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1 (2026-10-27)
+
+- VS Code (and other IDE) sessions were skipped as headless, so nothing in
+  them was counted. The extension (entrypoint `claude-vscode`) sends typed
+  prompts with `promptSource: "sdk"`. Now:
+  - A session is headless only when its `entrypoint` starts with `sdk`.
+  - A prompt is typed when `promptSource` is `typed`, or starts with `sdk`
+    and `origin.kind` is `human`.
+- New `vscode` fixture with hand counts.
+
 ## 0.2.0 (2026-09-27)
 
 - Layer 2 classification: `classify.mjs` labels every typed prompt with one
